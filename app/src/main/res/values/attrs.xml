@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!--自定义属性：style-->
+    <attr name="textColorPrimary" format="color"/>
+    <attr name="itemViewBackground" format="color"/>
+    <attr name="rootViewBackground" format="color"/>
+</resources>
