@@ -44,6 +44,11 @@ public class ZhuanlanView extends BaseFragment<IZhuanlan.Presenter> implements I
     private int type;
     private Observable<Boolean> observable;
 
+    /**
+     * 初始化fragment模版：
+     * @param type 类型：产品、生活、音乐、健康、专业、知乎等复用
+     * @return
+     */
     public static ZhuanlanView newInstance(int type) {
         Bundle args = new Bundle();
         args.putInt(TAG, type);
@@ -54,8 +59,8 @@ public class ZhuanlanView extends BaseFragment<IZhuanlan.Presenter> implements I
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        observable = RxBus.getInstance().register(Boolean.class);
-        observable.subscribe(new Consumer<Boolean>() {
+        observable = RxBus.getInstance().register(Boolean.class);// 注册 rxBus
+        observable.subscribe(new Consumer<Boolean>() {// 订阅事件：白天／夜晚 切换
             @Override
             public void accept(Boolean isNightMode) throws Exception {
                 refreshUI();
@@ -71,23 +76,33 @@ public class ZhuanlanView extends BaseFragment<IZhuanlan.Presenter> implements I
 
     @Override
     public void onDestroy() {
-        RxBus.getInstance().unregister(Boolean.class, observable);
+        RxBus.getInstance().unregister(Boolean.class, observable);// 解除注册 rxBus
         super.onDestroy();
     }
 
+    /**
+     * 刷新：presenter 去刷新
+     */
     @Override
     public void onRefresh() {
         presenter.doRefresh();
     }
 
+    /**
+     * 请求数据：presenter
+     */
     @Override
     public void onRequestData() {
         presenter.doLoading();
     }
 
+    /**
+     * 设置 adapter
+     * @param list
+     */
     @Override
     public void onSetAdapter(List<ZhuanlanBean> list) {
-        if (adapter == null) {
+        if (adapter == null) {// recyclerView的 adapter 绑定item
             adapter = new MultiTypeAdapter(list);
             adapter.register(ZhuanlanBean.class, new ZhuanlanViewBinder());
             recyclerView.setAdapter(adapter);
@@ -96,18 +111,27 @@ public class ZhuanlanView extends BaseFragment<IZhuanlan.Presenter> implements I
         }
     }
 
+    /**
+     * 显示loading：refreshLayout显示，recyclerView隐藏
+     */
     @Override
     public void onShowLoading() {
         refreshLayout.setRefreshing(true);
         recyclerView.setVisibility(View.GONE);
     }
 
+    /**
+     * 隐藏loading：refreshLayout隐藏，recyclerView显示
+     */
     @Override
     public void onHideLoading() {
         refreshLayout.setRefreshing(false);
         recyclerView.setVisibility(View.VISIBLE);
     }
 
+    /**
+     * 网络异常提示：SnackBar，refreshLayout设置可刷新
+     */
     @Override
     public void onShowNetError() {
         Snackbar.make(refreshLayout, R.string.network_error, Snackbar.LENGTH_SHORT).show();
@@ -119,23 +143,33 @@ public class ZhuanlanView extends BaseFragment<IZhuanlan.Presenter> implements I
         return R.layout.fragment_zhuanlan;
     }
 
+    /**
+     * 初始化view
+     * @param view
+     */
     @Override
     protected void initViews(View view) {
         root = view.findViewById(R.id.root);
         recyclerView = view.findViewById(R.id.recycler_view);
         refreshLayout = view.findViewById(R.id.refresh_layout);
-        recyclerView.setHasFixedSize(true);
-        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-        // 设置下拉刷新的按钮的颜色
+        recyclerView.setHasFixedSize(true);// 固定item大小，不随notify改变
+        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));// 线性单列垂直item
+        // 设置下拉刷新的按钮的颜色，监听
         refreshLayout.setColorSchemeColors(SettingUtil.getInstance().getColor());
         refreshLayout.setOnRefreshListener(this);
     }
 
+    /**
+     * 初始化数据
+     */
     @Override
     protected void initData() {
         onRequestData();
     }
 
+    /**
+     * 注入：presenter
+     */
     @Override
     protected void initInjector() {
         Bundle arguments = getArguments();
@@ -148,6 +182,13 @@ public class ZhuanlanView extends BaseFragment<IZhuanlan.Presenter> implements I
         }
     }
 
+    /**
+     * 白天／夜晚 改变 刷新ui：
+     * fragment 背景色
+     * item背景色
+     * item中文字颜色
+     *
+     */
     private void refreshUI() {
         Log.d(TAG, "refreshUI: ");
         Resources.Theme theme = getActivity().getTheme();
@@ -157,15 +198,15 @@ public class ZhuanlanView extends BaseFragment<IZhuanlan.Presenter> implements I
         theme.resolveAttribute(R.attr.rootViewBackground, rootViewBackground, true);
         theme.resolveAttribute(R.attr.itemViewBackground, itemViewBackground, true);
         theme.resolveAttribute(R.attr.textColorPrimary, textColorPrimary, true);
-        root.setBackgroundResource(rootViewBackground.resourceId);
+        root.setBackgroundResource(rootViewBackground.resourceId);// fragment根布局背景色修改
 
         Resources resources = getResources();
         int childCount = recyclerView.getChildCount();
         for (int i = 0; i < childCount; i++) {
             CardView cardView = recyclerView.getChildAt(i).findViewById(R.id.cardview);
-            cardView.setBackgroundResource(itemViewBackground.resourceId);
+            cardView.setBackgroundResource(itemViewBackground.resourceId);// item背景色
 
-            TextView tv_name = cardView.findViewById(R.id.tv_name);
+            TextView tv_name = cardView.findViewById(R.id.tv_name);// item文本字体色
             tv_name.setTextColor(resources.getColor(textColorPrimary.resourceId));
 
             TextView tv_followersCount = cardView.findViewById(R.id.tv_followersCount);

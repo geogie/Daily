@@ -31,6 +31,11 @@ public class SettingUtil {
     public void setIsNightMode(boolean flag) {
         setting.edit().putBoolean("switch_nightMode", flag).apply();
     }
+
+    /**
+     * 获取存储的主题颜色
+     * @return
+     */
     public int getColor() {
         int defaultColor = InitApp.AppContext.getResources().getColor(R.color.colorPrimary);
         int color = setting.getInt("color", defaultColor);
@@ -39,6 +44,11 @@ public class SettingUtil {
         }
         return color;
     }
+
+    /**
+     * 切换主题颜色后存储
+     * @param color
+     */
     public void setColor(int color) {
         setting.edit().putInt("color", color).apply();
     }

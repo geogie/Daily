@@ -22,10 +22,11 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 /**
  * Created by georgeRen on 2017/8/30.
+ * 网络请求库封装：缓存策略，无网络用cache的。有网络设置cache，无网缓存1周（7天）
  */
 
 public class RetrofitFactory {
-    private static final Object Object = new Object();
+    private static final Object Object = new Object();// 对象：多线程块 安全
     /**
      * 缓存机制
      * 在响应请求之后在 data/data/<包名>/cache 下建立一个response 文件夹，保持缓存数据。
@@ -39,12 +40,12 @@ public class RetrofitFactory {
         @Override
         public Response intercept(Chain chain) throws IOException {
             Request request = chain.request();
-            if (!NetWorkUtil.isNetworkConnected(InitApp.AppContext)) {
+            if (!NetWorkUtil.isNetworkConnected(InitApp.AppContext)) { // 断网
                 request = request.newBuilder().cacheControl(CacheControl.FORCE_CACHE).build();
             }
 
             Response originalResponse = chain.proceed(request);
-            if (NetWorkUtil.isNetworkConnected(InitApp.AppContext)) {
+            if (NetWorkUtil.isNetworkConnected(InitApp.AppContext)) {// 有网
                 // 有网络时 设置缓存为默认值
                 String cacheControl = request.cacheControl().toString();
                 return originalResponse.newBuilder()
@@ -63,7 +64,7 @@ public class RetrofitFactory {
     };
     private volatile static Retrofit retrofit;
     public static Retrofit getRetrofit() {
-        synchronized (Object) {
+        synchronized (Object) { // 块 http://blog.csdn.net/xxyyww/article/details/5780806
             if (retrofit == null) {
                 // 指定缓存路径,缓存大小 50Mb
                 Cache cache = new Cache(new File(InitApp.AppContext.getCacheDir(), "HttpCache"),
@@ -74,13 +75,13 @@ public class RetrofitFactory {
                         new PersistentCookieJar(new SetCookieCache(), new SharedPrefsCookiePersistor(InitApp.AppContext));
 
                 OkHttpClient.Builder builder = new OkHttpClient.Builder()
-                        .cookieJar(cookieJar)
-                        .cache(cache)
-                        .addInterceptor(cacheControlInterceptor)
-                        .connectTimeout(10, TimeUnit.SECONDS)
-                        .readTimeout(15, TimeUnit.SECONDS)
-                        .writeTimeout(15, TimeUnit.SECONDS)
-                        .retryOnConnectionFailure(true);
+                        .cookieJar(cookieJar) // cookie
+                        .cache(cache) //  cache 路径 大小
+                        .addInterceptor(cacheControlInterceptor) // 拦截器：
+                        .connectTimeout(10, TimeUnit.SECONDS) // 连接超时 http://www.jianshu.com/p/a71a42f4634b
+                        .readTimeout(15, TimeUnit.SECONDS) // 读超时
+                        .writeTimeout(15, TimeUnit.SECONDS) // 写超时
+                        .retryOnConnectionFailure(true); // 是否自动重连
 
                 // Log 拦截器
                 if (BuildConfig.DEBUG) {

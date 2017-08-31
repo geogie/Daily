@@ -24,9 +24,8 @@ public class ZhuanlanTable {
     public static final String SLUG = "slug";
 
     /**
-     * 字段ID 数据库操作建立字段对应关系 从0开始
+     * 字段ID 数据库操作建立字段对应关系 从1开始
      */
-    public static final int ID_TYPE = 0;
     public static final int ID_AVATARURL = 1;
     public static final int ID_AVATARId = 2;
     public static final int ID_NAME = 3;
@@ -35,6 +34,9 @@ public class ZhuanlanTable {
     public static final int ID_INTRO = 6;
     public static final int ID_SLUG = 7;
 
+    /**
+     * 创建一张 专栏信息表
+     */
     public static final String CREATE_TABLE = "create table " + TABLENAME + "(" +
             TYPE + " text," +
             AVATARURL + " text," +

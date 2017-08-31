@@ -12,7 +12,7 @@
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
     </style>
-    <!--app-->
+    <!--白天模式-->
     <style name="LightTheme" parent="AppTheme.NoActionBar">
         <item name="textColorPrimary">@color/Grey600</item>
         <item name="itemViewBackground">@color/viewBackground</item>
@@ -20,18 +20,6 @@
         <item name="alertDialogTheme">@style/Dialog.Alert.Light</item>
         <item name="android:windowBackground">@color/Grey50</item>
     </style>
-
-    <style name="Dialog.Alert.Light" parent="@style/Theme.AppCompat.Light.Dialog.Alert">
-        <!--修改AlertDialog颜色-->
-        <item name="android:background">@color/Grey50</item>
-        <item name="android:textColor">@color/Grey600</item>
-        <item name="android:textColorPrimary">@color/Grey600</item>
-    </style>
-    <!--appBar-->
-    <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar"/>
-    <!--toolbar-->
-    <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light"/>
-
     <!--夜间模式-->
     <style name="DarkTheme" parent="AppTheme.NoActionBar">
         <item name="textColorPrimary">@color/Grey400</item>
@@ -40,6 +28,17 @@
         <item name="alertDialogTheme">@style/Dialog.Alert.Dark</item>
         <item name="android:windowBackground">@color/Grey900</item>
     </style>
+
+    <style name="Dialog.Alert.Light" parent="@style/Theme.AppCompat.Light.Dialog.Alert">
+        <!--修改AlertDialog颜色-->
+        <item name="android:background">@color/Grey50</item>
+        <item name="android:textColor">@color/Grey600</item>
+        <item name="android:textColorPrimary">@color/Grey600</item>
+    </style>
+    <!--appBar:暗色-->
+    <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar"/>
+    <!--toolbar：亮色-->
+    <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light"/>
 
     <style name="Dialog.Alert.Dark" parent="@style/Theme.AppCompat.Light.Dialog.Alert">
         <!--修改AlertDialog颜色-->

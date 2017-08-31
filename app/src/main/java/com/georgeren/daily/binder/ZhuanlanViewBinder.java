@@ -19,6 +19,7 @@ import me.drakeet.multitype.ItemViewBinder;
 
 /**
  * Created by georgeRen on 2017/8/29.
+ * item
  */
 
 public class ZhuanlanViewBinder extends ItemViewBinder<ZhuanlanBean, ZhuanlanViewBinder.ViewHolder> {

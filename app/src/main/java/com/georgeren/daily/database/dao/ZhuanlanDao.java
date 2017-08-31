@@ -15,6 +15,7 @@ import static android.R.attr.id;
 
 /**
  * Created by georgeRen on 2017/8/29.
+ * 数据库操作：Dao
  */
 
 public class ZhuanlanDao {
@@ -24,7 +25,19 @@ public class ZhuanlanDao {
         this.db = DatabaseHelper.getDatabase();
     }
 
-    public boolean add(
+    /**
+     * 插入数据
+     * @param type
+     * @param avatarUrl
+     * @param avatarId
+     * @param name
+     * @param followersCount
+     * @param postsCount
+     * @param intro
+     * @param slug
+     * @return
+     */
+    private boolean add(
             String type,
             String avatarUrl,
             String avatarId,
@@ -46,6 +59,12 @@ public class ZhuanlanDao {
         return result != -1;
     }
 
+    /**
+     * 存储数据
+     * @param type
+     * @param bean
+     * @return
+     */
     public boolean add(int type, ZhuanlanBean bean) {
         boolean result = false;
         try {
@@ -64,6 +83,11 @@ public class ZhuanlanDao {
         return result;
     }
 
+    /**
+     * 获取数据列表
+     * @param type 类型
+     * @return
+     */
     public List<ZhuanlanBean> query(int type) {
         SQLiteDatabase db = DatabaseHelper.getDatabase();
         Cursor cursor = db.query(ZhuanlanTable.TABLENAME, null, "type=?", new String[]{type + ""}, null, null, null);

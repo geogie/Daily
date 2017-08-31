@@ -25,7 +25,6 @@ import retrofit2.Response;
 
 /**
  * Created by georgeRen on 2017/8/29.
- *
  */
 
 public class ZhuanlanPresenter implements IZhuanlan.Presenter {
@@ -36,7 +35,6 @@ public class ZhuanlanPresenter implements IZhuanlan.Presenter {
     public static final int TYPE_FINANCE = 4;// 专业领域
     public static final int TYPE_ZHIHU = 5;// 知乎·程序员
     public static final int TYPE_USERADD = 6;// 自定义
-    private static final String TAG = "ZhuanlanPresenter";
     private IZhuanlan.View view;
     private ZhuanlanDao dao = new ZhuanlanDao();
     private Call<ZhuanlanBean> call;
@@ -47,6 +45,10 @@ public class ZhuanlanPresenter implements IZhuanlan.Presenter {
         this.view = view;
         this.type = type;
     }
+
+    /**
+     * 获取数据：数据库／网络请求
+     */
     @Override
     public void doLoading() {
         view.onShowLoading();
@@ -55,18 +57,18 @@ public class ZhuanlanPresenter implements IZhuanlan.Presenter {
                 .create(new ObservableOnSubscribe<List<ZhuanlanBean>>() {
                     @Override
                     public void subscribe(@NonNull ObservableEmitter<List<ZhuanlanBean>> e) throws Exception {// RxCachedThreadScheduler-1
-                        Logger.d("type:"+type);
-                        e.onNext(dao.query(type));
+                        Logger.d("type:" + type);
+                        e.onNext(dao.query(type));// 数据库查询（子线程）
                     }
                 })
                 .subscribeOn(Schedulers.io())
                 .flatMap(new Function<List<ZhuanlanBean>, Observable<List<ZhuanlanBean>>>() {
                     @Override
                     public Observable<List<ZhuanlanBean>> apply(@NonNull List<ZhuanlanBean> list) throws Exception {// RxCachedThreadScheduler-1
-                        Logger.d("flatMap:"+type);
-                        if (null != list && list.size() > 0) {
+                        Logger.d("flatMap:" + type);
+                        if (null != list && list.size() > 0) {// 数据库中有数据直接返回
                             return Observable.just(list);
-                        } else {
+                        } else {// 数据库中没有数据，请求数据
                             list = retrofitRequest();
                             return Observable.just(list);
                         }
@@ -77,7 +79,7 @@ public class ZhuanlanPresenter implements IZhuanlan.Presenter {
                 .subscribe(new Consumer<List<ZhuanlanBean>>() {
                     @Override
                     public void accept(@NonNull List<ZhuanlanBean> list) throws Exception {// main
-                        Logger.d("subscribe:"+type);
+                        Logger.d("subscribe:" + type);
                         if (null != list && list.size() > 0) {
                             doSetAdapter(list);
                         } else {
@@ -92,6 +94,11 @@ public class ZhuanlanPresenter implements IZhuanlan.Presenter {
                 });
     }
 
+    /**
+     * 获取数据后 -》设置adapter
+     *
+     * @param list 返回结果数据
+     */
     @Override
     public void doSetAdapter(List<ZhuanlanBean> list) {
         view.onSetAdapter(list);
@@ -104,6 +111,9 @@ public class ZhuanlanPresenter implements IZhuanlan.Presenter {
         view.onShowNetError();
     }
 
+    /**
+     * 刷新数据
+     */
     @Override
     public void doRefresh() {
         view.onShowLoading();
@@ -117,10 +127,14 @@ public class ZhuanlanPresenter implements IZhuanlan.Presenter {
         }
     }
 
-
+    /**
+     * 网络请求数据（同步）：需要在子线程中调用
+     *
+     * @return
+     */
     private List<ZhuanlanBean> retrofitRequest() {
 
-        switch (type) {
+        switch (type) {// 根据类型获取 ids
             case TYPE_PRODUCT:
                 ids = InitApp.AppContext.getResources().getStringArray(R.array.product);
                 break;
@@ -144,7 +158,7 @@ public class ZhuanlanPresenter implements IZhuanlan.Presenter {
         final List<ZhuanlanBean> list = new ArrayList<>();
 
         IApi IApi = RetrofitFactory.getRetrofit().create(IApi.class);
-        for (String id : ids) {
+        for (String id : ids) {// 遍历请求数据（同步）
             call = IApi.getZhuanlanBean(id);
             try {
                 Response<ZhuanlanBean> response = call.execute();
@@ -157,7 +171,7 @@ public class ZhuanlanPresenter implements IZhuanlan.Presenter {
         }
 
         for (ZhuanlanBean bean : list) {
-            dao.add(type, bean);
+            dao.add(type, bean); // 数据库存储
         }
 
         return list;
