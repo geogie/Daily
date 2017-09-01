@@ -26,6 +26,7 @@ import com.georgeren.daily.injector.component.DaggerPostsContentComponent;
 import com.georgeren.daily.injector.module.PostsContentModule;
 import com.georgeren.daily.mvp.base.BaseActivity;
 import com.georgeren.daily.utils.SettingUtil;
+import com.orhanobut.logger.Logger;
 
 import static com.georgeren.daily.bean.PostsListBean.POSTSLISTBEAN_SLUG;
 import static com.georgeren.daily.bean.PostsListBean.POSTSLISTBEAN_TITLE;
@@ -33,6 +34,7 @@ import static com.georgeren.daily.bean.PostsListBean.POSTSLISTBEAN_TITLEIMAGE;
 
 /**
  * Created by georgeRen on 2017/8/30.
+ * 详情-
  */
 
 public class PostsContentView extends BaseActivity<IPostsContent.Presenter> implements IPostsContent.View {
@@ -52,9 +54,15 @@ public class PostsContentView extends BaseActivity<IPostsContent.Presenter> impl
                 .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
     }
 
+    /**
+     * webView加载网络获取后的html内容（封装后）
+     * bug:图片显示不出。浏览器中也是显示不出。估计是封装html出问题了。
+     * @param htmlData
+     */
     @Override
-    public void onSetWebView(String url) {
-        webView.loadDataWithBaseURL(null, url, "text/html", "utf-8", null);
+    public void onSetWebView(String htmlData) {
+        Logger.d("url:"+htmlData);
+        webView.loadDataWithBaseURL(null, htmlData, "text/html", "utf-8", null);// 加载html文本（字符串，类似webView本地加载）
     }
 
     @Override

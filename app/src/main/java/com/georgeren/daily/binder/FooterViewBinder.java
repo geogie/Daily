@@ -19,6 +19,7 @@ import me.drakeet.multitype.ItemViewBinder;
 
 /**
  * Created by georgeRen on 2017/8/30.
+ * item:加载更多loading
  */
 
 public class FooterViewBinder extends ItemViewBinder<FooterBean, FooterViewBinder.ViewHolder> {
@@ -34,11 +35,11 @@ public class FooterViewBinder extends ItemViewBinder<FooterBean, FooterViewBinde
     protected void onBindViewHolder(@NonNull ViewHolder holder, @NonNull FooterBean item) {
         int color = SettingUtil.getInstance().getColor();
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
-            Drawable wrapDrawable = DrawableCompat.wrap(holder.mProgressBar.getIndeterminateDrawable());
-            DrawableCompat.setTint(wrapDrawable, color);
-            holder.mProgressBar.setIndeterminateDrawable(DrawableCompat.unwrap(wrapDrawable));
+            Drawable wrapDrawable = DrawableCompat.wrap(holder.mProgressBar.getIndeterminateDrawable());// 获取loading样式
+            DrawableCompat.setTint(wrapDrawable, color);// 对loading着色（主题色）
+            holder.mProgressBar.setIndeterminateDrawable(DrawableCompat.unwrap(wrapDrawable));// 设置 loading 主题色
         } else {
-            holder.mProgressBar.getIndeterminateDrawable().setColorFilter(color, PorterDuff.Mode.SRC_IN);
+            holder.mProgressBar.getIndeterminateDrawable().setColorFilter(color, PorterDuff.Mode.SRC_IN);// 颜色渲染 取两层绘制交集。显示上层。http://blog.csdn.net/t12x3456/article/details/10432935
         }
     }
 

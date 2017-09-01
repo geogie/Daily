@@ -24,12 +24,18 @@ public class PostsListPresenter implements IPostsList.Presenter{
     public PostsListPresenter(IPostsList.View view) {
         this.view = view;
     }
+
+    /**
+     * 请求数据：包含加载更多
+     * @param slug 类型
+     * @param offset 加载更多偏移量
+     */
     @Override
     public void doRequestData(String slug, int offset) {
         RetrofitFactory.getRetrofit().create(IApi.class).getPostsListRx(slug, offset)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .compose(view.<List<PostsListBean>>bindToLife())
+                .subscribeOn(Schedulers.io())// 子线程中网络获取数据
+                .observeOn(AndroidSchedulers.mainThread())// 主线程中拿数据
+                .compose(view.<List<PostsListBean>>bindToLife())// 绑定生命周期
                 .subscribe(new Consumer<List<PostsListBean>>() {
                     @Override
                     public void accept(@NonNull List<PostsListBean> postsListBeen) throws Exception {

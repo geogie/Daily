@@ -43,6 +43,13 @@ public class PostsContentPresenter implements IPostsContent.Presenter {
                 });
     }
 
+    /**
+     * 把 content 包装成html内容文本
+     * 加上css（本地asset中master.css样式）
+     * 加上必要的标签生成html文本
+     * @param content body中的内容
+     * @return
+     */
     private String getContent(String content) {
         String css = "<link rel=\"stylesheet\" href=\"file:///android_asset/master.css\" type=\"text/css\">";
         String html = "<!DOCTYPE html>\n"

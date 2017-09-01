@@ -19,6 +19,7 @@ import me.drakeet.multitype.ItemViewBinder;
 
 /**
  * Created by georgeRen on 2017/8/30.
+ *
  */
 
 public class PostsListViewBinder extends ItemViewBinder<PostsListBean, PostsListViewBinder.ViewHolder> {
