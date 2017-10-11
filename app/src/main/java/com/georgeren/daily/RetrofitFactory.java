@@ -63,6 +63,7 @@ public class RetrofitFactory {
         }
     };
     private volatile static Retrofit retrofit;
+
     public static Retrofit getRetrofit() {
         synchronized (Object) { // 块 http://blog.csdn.net/xxyyww/article/details/5780806
             if (retrofit == null) {
@@ -71,8 +72,7 @@ public class RetrofitFactory {
                         1024 * 1024 * 50);
 
                 // Cookie 持久化
-                ClearableCookieJar cookieJar =
-                        new PersistentCookieJar(new SetCookieCache(), new SharedPrefsCookiePersistor(InitApp.AppContext));
+                ClearableCookieJar cookieJar = new PersistentCookieJar(new SetCookieCache(), new SharedPrefsCookiePersistor(InitApp.AppContext));
 
                 OkHttpClient.Builder builder = new OkHttpClient.Builder()
                         .cookieJar(cookieJar) // cookie

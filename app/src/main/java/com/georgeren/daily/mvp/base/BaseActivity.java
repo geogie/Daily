@@ -28,7 +28,7 @@ import me.drakeet.multitype.MultiTypeAdapter;
 
 public abstract class BaseActivity <T extends IBasePresenter> extends RxAppCompatActivity implements IBaseView<T>{
     @Inject
-    protected T presenter;// 注解
+    protected T presenter;// dagger2
     protected MultiTypeAdapter adapter;
     protected boolean canLoadMore;
 
@@ -39,6 +39,7 @@ public abstract class BaseActivity <T extends IBasePresenter> extends RxAppCompa
 
     /**
      * 初始化主题
+     * 夜间／白天
      */
     protected void initTheme(){
         boolean isNigtMode = SettingUtil.getInstance().getIsNightMode();
@@ -60,7 +61,7 @@ public abstract class BaseActivity <T extends IBasePresenter> extends RxAppCompa
         setSupportActionBar(toolbar);
         ActionBar actionBar = getSupportActionBar();
         if (actionBar!=null) {
-            actionBar.setDisplayHomeAsUpEnabled(homeAsUpEnable);
+            actionBar.setDisplayHomeAsUpEnabled(homeAsUpEnable);// 是否是返回按钮
         }
     }
 
@@ -87,6 +88,12 @@ public abstract class BaseActivity <T extends IBasePresenter> extends RxAppCompa
             getWindow().setNavigationBarColor(color);// 华为 底部navigationBarColor
         }
     }
+
+    /**
+     * tooBar 上的返回键处理
+     * @param item
+     * @return
+     */
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
@@ -96,7 +103,7 @@ public abstract class BaseActivity <T extends IBasePresenter> extends RxAppCompa
         return super.onOptionsItemSelected(item);
     }
     /**
-     * 绑定生命周期
+     * 生命周期：解除绑定
      */
     @Override
     public <T> LifecycleTransformer<T> bindToLife() {
